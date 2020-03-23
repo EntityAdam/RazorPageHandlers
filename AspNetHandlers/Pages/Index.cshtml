@@ -1,0 +1,112 @@
+﻿@page "{handler?}/{id:int?}"
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@if (!string.IsNullOrEmpty(Model.Messsage))
+{
+    <h1>@Model.Messsage</h1>
+}
+else
+{
+    <h2>HTTP GET</h2>
+    <a class="btn btn-primary" asp-page-handler="Create" asp-route-id="1">Create ID 1</a>
+    <a class="btn btn-primary" asp-page-handler="Retrieve" asp-route-id="1">Retrieve ID 1</a>
+    <a class="btn btn-primary" asp-page-handler="Edit" asp-route-id="1">Delete ID 1</a>
+    <a class="btn btn-danger" asp-page-handler="Delete" asp-route-id="1">Edit ID 1</a>
+    <a class="btn btn-primary" asp-page-handler="List">List</a>
+    <h2>HTTP POST</h2>
+    <form method="post" asp-page-handler="Create">
+        <input type="hidden" name="id" value="1" />
+        <button class="btn btn-primary">Create</button>
+    </form>
+    <form method="post" asp-page-handler="Retrieve">
+        <input type="hidden" name="id" value="1" />
+        <button class="btn btn-primary">Retrieve</button>
+    </form>
+    <form method="post" asp-page-handler="Edit">
+        <input type="hidden" name="id" value="1" />
+        <button class="btn btn-primary">Edit</button>
+    </form>
+    <form method="post" asp-page-handler="Delete">
+        <input type="hidden" name="id" value="1" />
+        <button class="btn btn-danger">Delete</button>
+    </form>
+    <form method="post" asp-page-handler="List">
+        <button class="btn btn-primary">List</button>
+    </form>
+
+    <hr />
+    <h2>AJAX, EW, Try BLAZOR</h2>
+    <p class="text-muted">You'll need to set breakpoints on the Delete Handlers, this only calls into them.</p>
+    <h3>GET</h3>
+    <a class="btn btn-primary" href="javascript: CallGetDeleteHandler();">Delete ID 1</a>
+    <h3>POST (No AntiForgery Token Fails)</h3>
+    <a class="btn btn-primary" href="javascript: CallPostDeleteHandlerWithoutAntiForgery();">Delete ID 1</a>
+    <h3>POST (With AntiForgery Token Succeeds)</h3>
+    <a class="btn btn-primary" href="javascript: CallPostDeleteHandlerWithAntiForgery();">Delete ID 1</a>
+}
+
+
+<script>
+    function CallGetDeleteHandler() {
+        $.ajax({
+            url: '?handler=Delete',
+            data: {
+                id: $(this).data(1)
+            }
+        })
+            .fail(function (e) {
+                // Error
+                alert(e.responseText); // Way too much info
+            })
+            .done(function () {
+                $('#message').text = e.responseText;
+            })
+            .always(function () {
+                // Always
+            });
+    }
+
+    function CallPostDeleteHandlerWithoutAntiForgery() {
+        $.ajax({
+            url: '?handler=Delete',
+            type: "POST",
+            data: {
+                id: $(this).data(1)
+            }
+        })
+            .fail(function (e) {
+                // Error
+                alert(e.responseText); // Way too much info
+            })
+            .done(function () {
+                $('#message').text = e.responseText;
+            })
+            .always(function () {
+                // Always
+            });
+    }
+
+    function CallPostDeleteHandlerWithAntiForgery() {
+        $.ajax({
+            url: '?handler=Delete',
+            type: "POST",
+            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            data: {
+                id: $(this).data(1)
+            }
+        })
+            .fail(function (e) {
+                // Error
+                alert(e.responseText); // Way too much info
+            })
+            .done(function () {
+                $('#message').text = e.responseText;
+            })
+            .always(function () {
+                // Always
+            });
+    }
+</script>
