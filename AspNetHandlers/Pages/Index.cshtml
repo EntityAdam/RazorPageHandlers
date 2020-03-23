@@ -1,4 +1,4 @@
-﻿@page "{handler?}/{id:int?}"
+﻿@page "{id?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -13,8 +13,8 @@ else
     <h2>HTTP GET</h2>
     <a class="btn btn-primary" asp-page-handler="Create" asp-route-id="1">Create ID 1</a>
     <a class="btn btn-primary" asp-page-handler="Retrieve" asp-route-id="1">Retrieve ID 1</a>
-    <a class="btn btn-primary" asp-page-handler="Edit" asp-route-id="1">Delete ID 1</a>
-    <a class="btn btn-danger" asp-page-handler="Delete" asp-route-id="1">Edit ID 1</a>
+    <a class="btn btn-primary" asp-page-handler="Edit" asp-route-id="1">Edit ID 1</a>
+    <a class="btn btn-danger" asp-page-handler="Delete" asp-route-id="1">Delete ID 1</a>
     <a class="btn btn-primary" asp-page-handler="List">List</a>
     <h2>HTTP POST</h2>
     <form method="post" asp-page-handler="Create">
@@ -29,10 +29,10 @@ else
         <input type="hidden" name="id" value="1" />
         <button class="btn btn-primary">Edit</button>
     </form>
-    <form method="post" asp-page-handler="Delete">
-        <input type="hidden" name="id" value="1" />
-        <button class="btn btn-danger">Delete</button>
-    </form>
+<form method="post" asp-page-handler="Delete">
+    <input type="hidden" name="id" value="1" />
+    <button class="btn btn-danger">Delete</button>
+</form>
     <form method="post" asp-page-handler="List">
         <button class="btn btn-primary">List</button>
     </form>
@@ -54,7 +54,7 @@ else
         $.ajax({
             url: '?handler=Delete',
             data: {
-                id: $(this).data(1)
+                id: "1" //it can be a string, and still coerced to an int!
             }
         })
             .fail(function (e) {
@@ -62,7 +62,7 @@ else
                 alert(e.responseText); // Way too much info
             })
             .done(function () {
-                $('#message').text = e.responseText;
+                // Success
             })
             .always(function () {
                 // Always
@@ -74,7 +74,7 @@ else
             url: '?handler=Delete',
             type: "POST",
             data: {
-                id: $(this).data(1)
+                id: "1"
             }
         })
             .fail(function (e) {
@@ -82,7 +82,7 @@ else
                 alert(e.responseText); // Way too much info
             })
             .done(function () {
-                $('#message').text = e.responseText;
+                // Success
             })
             .always(function () {
                 // Always
@@ -95,7 +95,7 @@ else
             type: "POST",
             headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
             data: {
-                id: $(this).data(1)
+                id: 1 //boring integer
             }
         })
             .fail(function (e) {
@@ -103,7 +103,7 @@ else
                 alert(e.responseText); // Way too much info
             })
             .done(function () {
-                $('#message').text = e.responseText;
+                // Success
             })
             .always(function () {
                 // Always
